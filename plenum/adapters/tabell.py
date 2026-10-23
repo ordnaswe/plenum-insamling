@@ -1,0 +1,128 @@
+"""Heuristisk tolkning av HTML-tabeller och listor med förtroendevalda.
+
+Används av både generic_table-adaptern och Troman-adaptern. Idén: hitta
+kolumner via rubriker (Namn/Parti/Uppdrag/E-post) och falla tillbaka på
+innehållsmönster om rubriker saknas. Inget gissas; en rad utan igenkänt
+namn hoppas över.
+"""
+from __future__ import annotations
+import re
+
+from ..models import Observation
+from ..normalize import hitta_epost, normalisera_roll, normalisera_parti, PARTIER
+
+RUBRIK = {
+    "efternamn": re.compile(r"^efternamn", re.I),
+    "fornamn": re.compile(r"^f(ö|o)rnamn", re.I),
+    "namn": re.compile(r"^(namn|ledamot|person|förtroendevald|ledamöter)", re.I),
+    "parti": re.compile(r"^parti", re.I),
+    "roll": re.compile(r"^(uppdrag|roll|funktion|befattning|post)", re.I),
+    "epost": re.compile(r"e-?post|mail", re.I),
+    "organ": re.compile(r"^(organ|nämnd|styrelse)", re.I),
+}
+_PARTI_TOKEN = re.compile(r"^\(?(" + "|".join(
+    re.escape(a) for v in PARTIER.values() for a in v if len(a) <= 2) + r")\)?$", re.I)
+_ROLL_ORD = re.compile(r"ordf|ledamot|ersättare|ersattare|revisor|suppleant|gruppledare|ombud|insyn", re.I)
+
+
+def _text(el) -> str:
+    try:
+        return re.sub(r"\s+", " ", el.get_all_text(strip=True) or "").strip()
+    except Exception:
+        return ""
+
+
+def _epost_i(el) -> str:
+    for href in el.css("a::attr(href)").getall():
+        if href and href.lower().startswith("mailto:"):
+            return hitta_epost(href)
+    return hitta_epost(_text(el))
+
+
+def _kolumnkarta(headers: list[str]) -> dict[str, int]:
+    karta = {}
+    for i, h in enumerate(headers):
+        for f, rx in RUBRIK.items():
+            if f not in karta and rx.search(h):
+                karta[f] = i
+    return karta
+
+
+def tolka_tabeller(page, org_slug: str, organ_namn: str, kalla_url: str):
+    """Yieldar Observation från alla tabeller på sidan."""
+    for tabell in page.css("table"):
+        rader = tabell.css("tr")
+        if len(rader) < 2:
+            continue
+        headers = [_text(c) for c in rader[0].css("th,td")]
+        karta = _kolumnkarta(headers)
+        start = 1 if ("namn" in karta or "efternamn" in karta or any(RUBRIK["roll"].search(h) for h in headers)) else 0
+        for tr in rader[start:]:
+            celler = tr.css("td")
+            if not celler:
+                continue
+            texter = [_text(c) for c in celler]
+            fornamn = efternamn = ""
+            if "efternamn" in karta and karta["efternamn"] < len(texter):
+                efternamn = texter[karta["efternamn"]]
+                fornamn = texter[karta["fornamn"]] if "fornamn" in karta and karta["fornamn"] < len(texter) else ""
+                namn = f"{fornamn} {efternamn}".strip()
+                parti = texter[karta["parti"]] if "parti" in karta and karta["parti"] < len(texter) else ""
+                roll = texter[karta["roll"]] if "roll" in karta and karta["roll"] < len(texter) else ""
+                organ = texter[karta["organ"]] if "organ" in karta and karta["organ"] < len(texter) else organ_namn
+                epost = _epost_i(tr)
+            elif "namn" in karta and karta["namn"] < len(texter):
+                namn = texter[karta["namn"]]
+                parti = texter[karta["parti"]] if "parti" in karta and karta["parti"] < len(texter) else ""
+                roll = texter[karta["roll"]] if "roll" in karta and karta["roll"] < len(texter) else ""
+                organ = texter[karta["organ"]] if "organ" in karta and karta["organ"] < len(texter) else organ_namn
+                epost = _epost_i(celler[karta["epost"]]) if "epost" in karta and karta["epost"] < len(texter) else _epost_i(tr)
+            else:
+                # inga rubriker: gissa INTE, utan kräv att raden har ett partitoken
+                # eller ett rolltoken så att vi vet att det är en förtroendevald-rad
+                namn, parti, roll, organ, epost = "", "", "", organ_namn, _epost_i(tr)
+                for t in texter:
+                    if not namn and t and not _PARTI_TOKEN.match(t) and not _ROLL_ORD.search(t) and "@" not in t and len(t) < 80:
+                        namn = t
+                    elif _PARTI_TOKEN.match(t) and not parti:
+                        parti = t
+                    elif _ROLL_ORD.search(t) and not roll:
+                        roll = t
+                if not (parti or roll):
+                    continue
+            if not namn or len(namn) > 80:
+                continue
+            pid = ""
+            for href in tr.css("a::attr(href)").getall():
+                m = re.search(r"/person/([0-9a-f-]{20,})", href or "", re.I)
+                if m:
+                    pid = m.group(1)
+                    break
+            yield Observation(org_slug=org_slug, organ_namn=organ, namn_raw=namn, fornamn=fornamn,
+                              efternamn=efternamn, roll_raw=roll, parti_raw=parti, epost=epost,
+                              kalla_url=kalla_url, extern_person_id=pid)
+
+
+_LISTRAD = re.compile(
+    r"^(?P<namn>[^,(]{3,60}?)\s*\((?P<parti>[^()]{1,40})\)\s*[,:\-–]?\s*(?P<roll>.*)$")
+
+
+def tolka_listor(page, org_slug: str, organ_namn: str, kalla_url: str):
+    """Tolkar listor av typen 'Anna Berg (S), ordförande' i li/p-element."""
+    for el in page.css("li, p"):
+        t = _text(el)
+        m = _LISTRAD.match(t)
+        if not m:
+            continue
+        roll = m.group("roll").strip()
+        if roll and normalisera_roll(roll) == "ovrigt" and not _ROLL_ORD.search(roll):
+            roll = ""
+        parti = m.group("parti").strip()
+        namn = m.group("namn").strip()
+        riksparti = normalisera_parti(parti) in PARTIER
+        lokalt = bool(re.search(r"parti|lista|alternativ|initiativ|demokrat", parti, re.I))
+        # kräv: känt parti, eller lokalt partinamn + roll, och ett namn med minst två ord
+        if not (riksparti or (lokalt and roll)) or len(namn.split()) < 2:
+            continue
+        yield Observation(org_slug=org_slug, organ_namn=organ_namn, namn_raw=namn,
+                          roll_raw=roll, parti_raw=parti, epost=_epost_i(el), kalla_url=kalla_url)
