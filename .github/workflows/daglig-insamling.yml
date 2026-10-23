@@ -1,0 +1,103 @@
+name: Daglig insamling av förtroendevalda
+
+on:
+  schedule:
+    - cron: "15 2 * * *"        # 04:15 svensk sommartid / 03:15 vintertid
+  workflow_dispatch:
+    inputs:
+      org:
+        description: "Kör bara en org_slug (tomt = alla)"
+        required: false
+      personsidor:
+        description: "Hämta personsidor för e-post (1/0)"
+        default: "0"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: insamling
+  cancel-in-progress: false
+
+jobs:
+  samla:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]     # 311 organisationer / 6 ≈ 52 per jobb, körs parallellt
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      PLENUM_PROXY: ${{ secrets.PLENUM_PROXY }}      # tom om ingen proxy
+      PLENUM_BROWSER: "1"
+      PLENUM_RAVDATA: "1"
+      PLENUM_PERSONSIDOR: "0"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Installera headless-webbläsare (fallback vid blockering)
+        run: scrapling install
+      - name: Synka organisationer (bara shard 0)
+        if: matrix.shard == 0
+        run: python -m plenum.run --synka-org --org __ingen__ || true
+      - name: Kör en angiven organisation (bara i jobb 0)
+        if: github.event.inputs.org != '' && matrix.shard == 0
+        run: python -m plenum.run --org "${{ github.event.inputs.org }}"
+      - name: Kör shard (alla organisationer)
+        if: github.event.inputs.org == ''
+        run: python -m plenum.run --shard ${{ matrix.shard }}/6
+      - name: Håll repot aktivt (GitHub pausar schemalagda körningar efter 60 dagar utan aktivitet)
+        if: always() && matrix.shard == 0 && github.event_name == 'schedule'
+        run: |
+          d=$(date -u +%d)
+          if [ "$d" = "01" ] || [ "$d" = "15" ]; then
+            mkdir -p data && date -u +%F > data/senast_korning.txt
+            git config user.name "plenum-bot"
+            git config user.email "bot@plenum.se"
+            git add data/senast_korning.txt
+            git diff --cached --quiet || git commit -m "Senaste körning $(date -u +%F)"
+            git push || true
+          fi
+      - name: Spara loggar
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logg-shard-${{ matrix.shard }}
+          path: data/out
+          if-no-files-found: ignore
+
+  # Veckovis: personsidor för e-post (söndagar)
+  epost:
+    if: github.event_name == 'schedule' || github.event.inputs.personsidor == '1'
+    needs: samla
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+      PLENUM_PERSONSIDOR: "1"
+      PLENUM_MIN_PAUS: "0.8"
+      PLENUM_MAX_PAUS: "1.6"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements.txt
+      - name: Personsidor (söndagar, eller manuellt med personsidor=1)
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "$(date -u +%u)" != "7" ]; then echo "Inte söndag, hoppar"; exit 0; fi
+          if [ -n "${{ github.event.inputs.org }}" ]; then
+            [ "${{ matrix.shard }}" = "0" ] && python -m plenum.run --org "${{ github.event.inputs.org }}" || true
+          else
+            python -m plenum.run --adapter troman --shard ${{ matrix.shard }}/6
+          fi
