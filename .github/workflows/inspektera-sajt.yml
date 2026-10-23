@@ -1,0 +1,26 @@
+name: Inspektera en sajt (innan adapter-konfig)
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Adress att inspektera, t.ex. https://haninge.tromanpublik.se/"
+        required: true
+
+jobs:
+  inspektera:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements.txt
+      - name: Inspektera
+        run: python -m plenum.inspect "${{ github.event.inputs.url }}" | tee data/inspect.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: inspect-resultat
+          path: |
+            data/inspect.txt
+            data/inspect.html
