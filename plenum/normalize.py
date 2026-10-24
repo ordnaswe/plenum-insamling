@@ -75,15 +75,19 @@ def normalisera_parti(parti_raw: str) -> str:
 
 # ---------- organ ----------
 ORGAN_MONSTER = [
+    # Ordningen spelar roll. Bolag kräver ett tydligt bolagskännetecken (AB, aktiebolag,
+    # bolag, holding). Ord som energi/fastighet/hamn/bostäder räcker INTE, de förekommer
+    # i nämndnamn ("Teknik- och fastighetsnämnden", "Hamn- och gatunämnden").
+    # Bolag utan sådant kännetecken fångas via Tromans kategori "Bolag" (adaptern).
     (r"fullm[äa]ktige", "fullmaktige"),
-    (r"utskott|arbetsutskott|\bau\b|beredning", "utskott"),
-    (r"kommunstyrelse|regionstyrelse|stadsstyrelse|\bks\b", "styrelse"),
-    (r"\bab\b|aktiebolag|\bbolag|holding|fastighets|energi|bostäder|bostader|hamn|stadshus|koncern", "bolag"),
     (r"revision|revisor", "revision"),
+    (r"utskott|arbetsutskott|\bau\b|beredning", "utskott"),
     (r"valberedning", "valberedning"),
+    (r"\bab\b|aktiebolag|bolag\b|bolaget|holding", "bolag"),
+    (r"kommunstyrelse|regionstyrelse|stadsstyrelse|\bks\b", "styrelse"),
     (r"f[öo]rbund|samordningsf", "forbund"),
     (r"stiftelse", "stiftelse"),
-    (r"n[äa]mnd|styrelsen f[öo]r|\bnämnden\b", "namnd"),
+    (r"n[äa]mnd|styrelsen f[öo]r", "namnd"),
     (r"r[åa]d\b|rådet", "rad"),
 ]
 _ORGAN_RE = [(re.compile(p, re.I), v) for p, v in ORGAN_MONSTER]

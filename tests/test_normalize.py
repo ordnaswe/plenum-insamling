@@ -40,6 +40,13 @@ def test_organ():
     assert normalisera_organ_typ("Kommunstyrelsens personalutskott") == "utskott"
     assert normalisera_organ_typ("Nyköpings-Oxelösunds Överförmyndarnämnd") == "namnd"
     assert normalisera_organ_typ("Haninge Bostäder AB") == "bolag"
+    assert normalisera_organ_typ("Teknik- och fastighetsnämnden") == "namnd"
+    assert normalisera_organ_typ("Hamn- och gatunämnden") == "namnd"
+    assert normalisera_organ_typ("Energi-, miljö- och naturnämnden") == "namnd"
+    assert normalisera_organ_typ("Miljö- och energirådet") == "rad"
+    assert normalisera_organ_typ("Kommunkoncernen") == "ovrigt"
+    assert normalisera_organ_typ("Styrelsen Vårgårda Bostäder AB") == "bolag"
+    assert normalisera_organ_typ("Nordanstig Vatten AB revisor") == "revision"
 
 
 def test_epost():
