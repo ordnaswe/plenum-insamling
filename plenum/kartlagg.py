@@ -65,7 +65,11 @@ FINGERAVTRYCK = [  # (namn, mönster i HTML/länkar)
     ("drupal", r"drupal"),
 ]
 _FA = [(n, re.compile(p, re.I)) for n, p in FINGERAVTRYCK]
-_PARTI = re.compile(r"\((S|M|SD|C|V|KD|L|MP)\)")
+_PARTI = re.compile(
+    r"\((S|M|SD|C|V|KD|L|MP)\)"
+    r"|socialdemokraterna|moderaterna|sverigedemokraterna|centerpartiet|vänsterpartiet"
+    r"|kristdemokraterna|liberalerna|miljöpartiet", re.I)
+_BRA_URL = re.compile(r"ledamot|ledamöter|ledamoter|fortroendevald|förtroendevald|politiker", re.I)
 _ROLL = re.compile(r"\b(ledamot|ersättare|ordförande)\b", re.I)
 
 
@@ -116,7 +120,9 @@ def poang_lank(text: str, href: str) -> int:
 
 
 def sidsignal(page) -> tuple[int, int, int]:
-    txt = _text(page)
+    # alt-texter räknas med: vissa sajter visar partiet bara som logotyp
+    alt = " ".join(x for x in page.css("img::attr(alt)").getall() if x)
+    txt = _text(page) + " " + alt
     mail = sum(1 for h in page.css("a::attr(href)").getall() if h and h.lower().startswith("mailto:"))
     return len(_PARTI.findall(txt)), len(_ROLL.findall(txt)), mail
 
@@ -165,7 +171,7 @@ def kartlagg_en(h, k, max_sidor: int = 8) -> dict:
         lankar = [urljoin(url, x) for x in page.css("a::attr(href)").getall() if x]
         fa |= fingeravtryck(_html(page), lankar)
         sig = sidsignal(page)
-        p = sig[0] * 2 + sig[1] + sig[2]
+        p = sig[0] * 2 + sig[1] + sig[2] + (3 if _BRA_URL.search(url) else 0)
         if url != start.url and p > basta[0]:
             basta = (p, url, sig)
         for a in page.css("a"):
