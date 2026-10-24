@@ -35,7 +35,7 @@ eksjo,Eksjö,0686,kommun,,manual,,1,{},System okänt: fyll i från troman_data.p
 emmaboda,Emmaboda,0862,kommun,troman,troman,https://emmaboda.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda i Emmaboda kommun"
 enkoping,Enköping,0381,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 eskilstuna,Eskilstuna,0484,kommun,troman,troman,https://eskilstuna.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
-eslov,Eslöv,1285,kommun,troman,troman,https://eslov.tromanpublik.se/,1,{},"KONTROLLERA: svarade inte som Troman 2026-10-23. Troman, subdomän verifierad via Google-index 2026-05"
+eslov,Eslöv,1285,kommun,,manual,,1,{},Lämnat Troman eller övergiven sajt (2026-10-24). Tidigare: https://eslov.tromanpublik.se/
 essunga,Essunga,1445,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 fagersta,Fagersta,1982,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 falkenberg,Falkenberg,1382,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
@@ -110,7 +110,7 @@ kumla,Kumla,1881,kommun,troman,troman,https://kumla.tromanpublik.se/,1,{},"Troma
 kungsbacka,Kungsbacka,1384,kommun,troman,troman,https://kungsbacka.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
 kungsor,Kungsör,1960,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 kungalv,Kungälv,1482,kommun,troman,troman,https://kungalv.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
-kavlinge,Kävlinge,1261,kommun,troman,troman,https://kavlinge.tromanpublik.se/,1,{},"KONTROLLERA: svarade inte som Troman 2026-10-24. Troman, subdomän verifierad via Google-index 2026-05"
+kavlinge,Kävlinge,1261,kommun,,manual,,1,{},Lämnat Troman eller övergiven sajt (2026-10-24). Tidigare: https://kavlinge.tromanpublik.se/
 koping,Köping,1983,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 laholm,Laholm,1381,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 landskrona,Landskrona,1282,kommun,troman,troman,https://landskrona.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
@@ -121,7 +121,7 @@ lerum,Lerum,1441,kommun,troman,troman,https://lerum.tromanpublik.se/,1,{},"Troma
 lessebo,Lessebo,0761,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 lidingo,Lidingö,0186,kommun,troman,troman,https://lidingo.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
 lidkoping,Lidköping,1494,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
-lilla-edet,Lilla Edet,1462,kommun,troman,troman,https://lillaedet.tromanpublik.se/,1,{},"KONTROLLERA: svarade inte som Troman 2026-10-24. Troman, subdomän verifierad via Google-index 2026-05"
+lilla-edet,Lilla Edet,1462,kommun,,manual,,1,{},Lämnat Troman eller övergiven sajt (2026-10-24). Tidigare: https://lillaedet.tromanpublik.se/
 lindesberg,Lindesberg,1885,kommun,troman,troman,https://lindesberg.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
 linkoping,Linköping,0580,kommun,troman,troman,https://linkoping.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
 ljungby,Ljungby,0781,kommun,troman,troman,https://ljungby.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda hos oss"
@@ -274,7 +274,7 @@ asele,Åsele,2463,kommun,troman,troman,https://asele.tromanpublik.se/,1,{},"Trom
 astorp,Åstorp,1277,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 atvidaberg,Åtvidaberg,0561,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 almhult,Älmhult,0765,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
-alvdalen,Älvdalen,2039,kommun,troman,troman,https://alvdalen.tromanpublik.se/,1,{},"KONTROLLERA: svarade inte som Troman 2026-10-24. Troman, subdomän verifierad via Google-index 2026-05"
+alvdalen,Älvdalen,2039,kommun,,manual,,1,{},Lämnat Troman eller övergiven sajt (2026-10-24). Tidigare: https://alvdalen.tromanpublik.se/
 alvkarleby,Älvkarleby,0319,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 alvsbyn,Älvsbyn,2560,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 angelholm,Ängelholm,1292,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
