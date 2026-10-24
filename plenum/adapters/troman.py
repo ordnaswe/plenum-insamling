@@ -24,6 +24,19 @@ from ..models import Observation
 _ORG = re.compile(r"/organisation/([0-9a-f-]{20,})", re.I)
 _TYP = re.compile(r"/organisationstyp/([0-9a-f-]{20,})", re.I)
 _PERSON = re.compile(r"/person/([0-9a-f-]{20,})", re.I)
+_SENAST = re.compile(r"Senast uppdaterad:\s*(\d{4}-\d{2}-\d{2})")
+MAX_ALDER_DAGAR = int(os.getenv("PLENUM_TROMAN_MAX_ALDER", "180"))
+
+
+class InaktuellKalla(Exception):
+    """Troman-sajten finns men har inte uppdaterats på länge (t.ex. Kävlinge: senast 2023-05-10)."""
+
+
+def senast_uppdaterad(page) -> str:
+    m = _SENAST.search(page.get_all_text(separator=" ") or "")
+    return m.group(1) if m else ""
+
+
 _MANDAT = re.compile(r"Mandatperiod:?\s*(\d{4})-\d{2}-\d{2}\s*-\s*(\d{4})-\d{2}-\d{2}")
 
 # Tromans kategorinamn -> vår organtyp, används bara om namnheuristiken ger 'ovrigt'
@@ -54,6 +67,12 @@ class TromanAdapter(Adapter):
 
     def samla(self):
         start = self.h.get(self.kalla.base_url)
+        datum = senast_uppdaterad(start)
+        if datum:
+            import datetime as _dt
+            alder = (_dt.date.today() - _dt.date.fromisoformat(datum)).days
+            if alder > MAX_ALDER_DAGAR:
+                raise InaktuellKalla(f"Troman-sajten senast uppdaterad {datum} ({alder} dagar sedan)")
         organ_urls = self._lankar(start, _ORG)
         for typ_url in list(self._lankar(start, _TYP)):
             sida = self.h.get(typ_url)

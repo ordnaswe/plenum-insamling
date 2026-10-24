@@ -108,6 +108,12 @@ def main(argv=None):
                 har_org = r.status == 200 and any("/organisation/" in (x or "") for x in r.css("a::attr(href)").getall())
                 ok, varfor = bedom(r.status, titel, har_org, k.typ)
                 if ok:
+                    from .adapters.troman import senast_uppdaterad, MAX_ALDER_DAGAR
+                    import datetime as _dt
+                    d = senast_uppdaterad(r)
+                    if d and (_dt.date.today() - _dt.date.fromisoformat(d)).days > MAX_ALDER_DAGAR:
+                        ok, varfor = False, f"sajten senast uppdaterad {d}, räknas som inaktuell"
+                if ok:
                     traff = (url, titel or "(ingen titel)")
                     break
                 if r.status == 200:

@@ -16,6 +16,7 @@ import traceback
 
 from .adapters import skapa
 from .fetch import Hamtare, Blockerad
+from .adapters.troman import InaktuellKalla
 from .kallor import las_kallor
 from .store import Lager, skriv_jsonl
 
@@ -72,6 +73,9 @@ def main(argv=None):
                     res["ravdata_path"] = lager.ladda_upp_ravdata(k.org_slug, obs)
                 log.info("%s: %s, %d uppdrag, %d hämtningar, %.0fs", k.org_slug, res["status"],
                          res["antal_uppdrag"], h.antal_hamtningar - fore, time.time() - t0)
+            except InaktuellKalla as e:
+                res = dict(status="inaktuell_kalla", felmeddelande=str(e))
+                log.warning("%s: %s", k.org_slug, e)
             except Blockerad as e:
                 res = dict(status="blockerad", felmeddelande=str(e))
                 misslyckade += 1
