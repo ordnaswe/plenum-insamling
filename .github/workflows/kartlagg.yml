@@ -7,6 +7,9 @@ on:
         description: "En org_slug (tomt = alla utan källa)"
         required: false
 
+permissions:
+  contents: write
+
 jobs:
   kartlagg:
     runs-on: ubuntu-latest
@@ -16,14 +19,21 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12", cache: pip }
       - run: pip install -r requirements.txt
-      - name: Kartlägg
+      - name: Kartlägg (och skriv in bekräftade Netpublicator-register i kallor.csv)
         run: |
           if [ -n "${{ github.event.inputs.org }}" ]; then
-            python -m plenum.kartlagg --org "${{ github.event.inputs.org }}"
+            python -m plenum.kartlagg --uppdatera --org "${{ github.event.inputs.org }}"
           else
-            python -m plenum.kartlagg
+            python -m plenum.kartlagg --uppdatera
           fi
       - uses: actions/upload-artifact@v4
         with:
           name: kartlaggning
           path: data/kartlaggning.csv
+      - name: Spara uppdaterad kallor.csv i repot
+        run: |
+          git config user.name "plenum-bot"
+          git config user.email "bot@plenum.se"
+          git add config/kallor.csv
+          git diff --cached --quiet || git commit -m "Netpublicator-register hittade av kartläggningen"
+          git push
