@@ -1,0 +1,49 @@
+name: Egna webbplatser (provkör / koppla in)
+
+on:
+  workflow_dispatch:
+    inputs:
+      steg:
+        description: "provkor = testa och skriv rapport, koppla_in = koppla in godkända enligt senaste rapport"
+        required: true
+        default: "provkor"
+      org:
+        description: "En org_slug (tomt = alla i config/egna_sajter.csv)"
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  egna:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements.txt
+      - name: Provkör
+        if: github.event.inputs.steg == 'provkor'
+        run: |
+          if [ -n "${{ github.event.inputs.org }}" ]; then
+            python -m plenum.provkor_egna --org "${{ github.event.inputs.org }}"
+          else
+            python -m plenum.provkor_egna
+          fi
+      - name: Koppla in godkända
+        if: github.event.inputs.steg == 'koppla_in'
+        run: python -m plenum.provkor_egna --koppla-in
+      - uses: actions/upload-artifact@v4
+        if: github.event.inputs.steg == 'provkor'
+        with:
+          name: provkorning-egna
+          path: data/provkorning_egna.csv
+      - name: Spara rapport och kallor.csv i repot
+        if: github.event.inputs.org == ''
+        run: |
+          git config user.name "plenum-bot"
+          git config user.email "bot@plenum.se"
+          git add -f data/provkorning_egna.csv config/kallor.csv || true
+          git diff --cached --quiet || git commit -m "Egna webbplatser: ${{ github.event.inputs.steg }}"
+          git push
