@@ -135,7 +135,7 @@ def fingeravtryck(html: str, lankar: list[str]) -> set[str]:
 def kartlagg_en(h, k, max_sidor: int = 8) -> dict:
     rad = dict(org_slug=k.org_slug, organisation=k.organisation, typ=k.typ, hemsida="",
                basta_sida="", parti_traffar=0, roll_traffar=0, mailto=0,
-               fingeravtryck="", extern_systemlank="", besokta_sidor=0, anteckning="")
+               fingeravtryck="", extern_systemlank="", inbaddat="", sidor_404=0, besokta_sidor=0, anteckning="")
     start = None
     for url in kandidater(k):
         try:
@@ -157,6 +157,8 @@ def kartlagg_en(h, k, max_sidor: int = 8) -> dict:
     ko = [(100, start.url, start)]
     sedda = {start.url}
     besokta = 0
+    noll404 = 0
+    iframes: set[str] = set()
     while ko and besokta < max_sidor:
         ko.sort(key=lambda x: -x[0])
         _, url, page = ko.pop(0)
@@ -167,8 +169,16 @@ def kartlagg_en(h, k, max_sidor: int = 8) -> dict:
                 continue
             if page.status != 200:
                 continue
+        titel = (page.css("title::text").get() or "").lower()
+        if "404" in titel or "sidan kunde inte hittas" in titel or "/404" in (page.css('meta[property="og:url"]::attr(content)').get() or ""):
+            noll404 += 1
+            continue
         besokta += 1
         lankar = [urljoin(url, x) for x in page.css("a::attr(href)").getall() if x]
+        for src in page.css("iframe::attr(src)").getall():
+            if src and not src.startswith(("about:", "javascript:")):
+                iframes.add(urlparse(urljoin(url, src)).netloc)
+                lankar.append(urljoin(url, src))
         fa |= fingeravtryck(_html(page), lankar)
         sig = sidsignal(page)
         p = sig[0] * 2 + sig[1] + sig[2] + (3 if _BRA_URL.search(url) else 0)
@@ -190,13 +200,17 @@ def kartlagg_en(h, k, max_sidor: int = 8) -> dict:
             if uhost.endswith(host) or any(rx.search(u) for _, rx in _FA[:9]):
                 sedda.add(u)
                 ko.append((sc, u, None))
-    rad.update(besokta_sidor=besokta, fingeravtryck=",".join(sorted(fa)), extern_systemlank=extern)
+    # inbäddade tjänster som bara är video/kartor/cookies räknas inte
+    iframes = {d for d in iframes if not re.search(r"youtube|vimeo|google|maps|cookie|facebook|twitter|qbrick|readspeaker|siteimprove", d)}
+    rad.update(besokta_sidor=besokta, fingeravtryck=",".join(sorted(fa)), extern_systemlank=extern,
+               inbaddat=",".join(sorted(iframes)), sidor_404=noll404)
     if basta[1]:
         rad.update(basta_sida=basta[1], parti_traffar=basta[2][0], roll_traffar=basta[2][1], mailto=basta[2][2])
     if not rad["basta_sida"]:
         rad["anteckning"] = "hittade ingen sida om politiker"
     elif basta[0] < 10:
-        rad["anteckning"] = "svag signal, troligen ingen lista med partibeteckningar"
+        rad["anteckning"] = ("svag signal; listan verkar vara inbäddad: " + rad["inbaddat"]) if rad["inbaddat"] \
+            else "svag signal, listan laddas troligen med JavaScript eller saknas"
     return rad
 
 
@@ -221,10 +235,10 @@ def main(argv=None):
                 rad = dict(org_slug=k.org_slug, organisation=k.organisation, typ=k.typ, anteckning=f"fel: {e}")
             rader.append(rad)
             print(f"{k.organisation:28s} {rad.get('hemsida',''):38s} -> {rad.get('basta_sida','')}  "
-                  f"[{rad.get('fingeravtryck','')}] P{rad.get('parti_traffar',0)} {rad.get('anteckning','')}")
+                  f"[{rad.get('fingeravtryck','')}] P{rad.get('parti_traffar',0)} {rad.get('inbaddat','')} {rad.get('anteckning','')}")
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     falt = ["org_slug", "organisation", "typ", "hemsida", "basta_sida", "parti_traffar", "roll_traffar",
-            "mailto", "fingeravtryck", "extern_systemlank", "besokta_sidor", "anteckning"]
+            "mailto", "fingeravtryck", "extern_systemlank", "inbaddat", "sidor_404", "besokta_sidor", "anteckning"]
     with open(a.out, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=falt, extrasaction="ignore")
         w.writeheader()
@@ -235,6 +249,8 @@ def main(argv=None):
     print(f"  sida med tydlig politikerlista (minst 5 partibeteckningar): "
           f"{sum(1 for r in rader if int(r.get('parti_traffar') or 0) >= 5)}")
     print(f"  länk till externt politiksystem: {sum(1 for r in rader if r.get('extern_systemlank'))}")
+    ib = Counter(x for r in rader for x in (r.get("inbaddat") or "").split(",") if x)
+    print("  inbäddade tjänster:", ", ".join(f"{n} {c}" for n, c in ib.most_common(15)))
     print("  fingeravtryck:", ", ".join(f"{n} {c}" for n, c in fa.most_common()))
     print(f"-> {a.out}")
 
