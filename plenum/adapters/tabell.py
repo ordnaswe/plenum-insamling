@@ -60,9 +60,28 @@ def _kolumnkarta(headers: list[str]) -> dict[str, int]:
     return karta
 
 
+def _rubrik_fore(el) -> str:
+    try:
+        r = el.xpath("preceding::*[self::h2 or self::h3 or self::h4 or self::h5][1]")
+        return _text(r[0]) if r else ""
+    except Exception:
+        return ""
+
+
+def _roll_ur_rubrik(rubrik: str) -> str:
+    """'Ledamöter' -> 'Ledamot', 'Ersättare' -> 'Ersättare', annars ''."""
+    r = (rubrik or "").lower()
+    if re.search(r"ersättare|ersattare|suppleant", r):
+        return "Ersättare"
+    if re.search(r"ledamöter|ledamot|ledamoter", r):
+        return "Ledamot"
+    return ""
+
+
 def tolka_tabeller(page, org_slug: str, organ_namn: str, kalla_url: str):
     """Yieldar Observation från alla tabeller på sidan."""
     for tabell in page.css("table"):
+        rubrik_roll = _roll_ur_rubrik(_rubrik_fore(tabell))
         rader = tabell.css("tr")
         if len(rader) < 2:
             continue
@@ -104,6 +123,8 @@ def tolka_tabeller(page, org_slug: str, organ_namn: str, kalla_url: str):
                     continue
             if not namn or len(namn) > 80:
                 continue
+            if not roll and rubrik_roll:
+                roll = rubrik_roll
             pid = ""
             for href in tr.css("a::attr(href)").getall():
                 m = re.search(r"/(?:person|politician)/([0-9a-f-]{20,})", href or "", re.I)
@@ -120,20 +141,26 @@ _LISTRAD = re.compile(
 
 
 def tolka_listor(page, org_slug: str, organ_namn: str, kalla_url: str):
-    """Tolkar listor av typen 'Anna Berg (S), ordförande' i li/p-element."""
-    for el in page.css("li, p"):
+    """Tolkar listor av typen 'Anna Berg (S), ordförande' i li/p-element.
+    Saknas roll på raden används närmast föregående rubrik ('Ledamöter', 'Ersättare')."""
+    rubrik_roll = ""
+    for el in page.css("h2, h3, h4, h5, li, p"):
+        tag = (getattr(el, "tag", "") or "").lower()
         t = _text(el)
+        if tag in ("h2", "h3", "h4", "h5"):
+            rubrik_roll = _roll_ur_rubrik(t)
+            continue
         m = _LISTRAD.match(t)
         if not m:
             continue
         roll = m.group("roll").strip()
         if roll and normalisera_roll(roll) == "ovrigt" and not _ROLL_ORD.search(roll):
             roll = ""
+        roll = roll or rubrik_roll
         parti = m.group("parti").strip()
         namn = m.group("namn").strip()
         riksparti = normalisera_parti(parti) in PARTIER
         lokalt = bool(re.search(r"parti|lista|alternativ|initiativ|demokrat", parti, re.I))
-        # kräv: känt parti, eller lokalt partinamn + roll, och ett namn med minst två ord
         if not (riksparti or (lokalt and roll)) or len(namn.split()) < 2:
             continue
         yield Observation(org_slug=org_slug, organ_namn=organ_namn, namn_raw=namn,
