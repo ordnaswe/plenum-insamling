@@ -20,6 +20,9 @@ ORGAN_ORD = re.compile(r"nämnd|namnd|styrelse|fullmäktige|fullmaktige|utskott|
                        r"förtroendevald|fortroendevald|presidi", re.I)
 NEJ = re.compile(r"protokoll|kallelse|sammanträde|sammantrade|handling|arkiv|valet|webb-?tv|"
                  r"lediga|kontakt|felanmäl|e-tjänst|cookie|tillgänglighet|\.pdf$|mailto:", re.I)
+SKRAP_RUBRIK = re.compile(r"kakor|cookie|skriv ut|kontakt|sök |^sök$|startsida|underhåll|hitta din|"
+                          r"meny|navigering|genvägar|lyssna|translate|^kommun och politik$|"
+                          r"^politik och demokrati$|^politisk organisation$|^nämnder$|^utskott$|^förtroendevalda$", re.I)
 _SVANS = re.compile(r"(s)?\s+(ledamöter och ersättare|ledamöter|ersättare|förtroendevalda|"
                     r"politiker|sammansättning|ledamot)$", re.I)
 
@@ -36,9 +39,23 @@ class GenericTableAdapter(Adapter):
     namn = "generic_table"
 
     def _organ_namn(self, page, fallback: str) -> str:
-        sel = self.kalla.extra.get("organ_rubrik", "h1")
-        el = page.css(sel)
-        return rensa_organnamn(_text(el[0]) if el else fallback)
+        """Sidans rubrik i huvudinnehållet. Rubriker från kakbanners, utskriftsknappar,
+        sidhuvud m.m. hoppas över (provkörningen 2026-10-25 gav t.ex. 'Skriv ut',
+        'Vi använder kakor' och kommunens namn som organnamn)."""
+        sel = self.kalla.extra.get("organ_rubrik")
+        kandidater = [_text(e) for e in page.css(sel)] if sel else []
+        if not kandidater:
+            for s in ("main h1", "article h1", "#content h1", "[role=main] h1", ".sv-text-portlet h1", "h1", "h2"):
+                kandidater += [_text(e) for e in page.css(s)]
+        kommun = self.kalla.organisation.lower()
+        for k in kandidater:
+            if k and not SKRAP_RUBRIK.search(k) and k.lower().strip() not in (kommun, f"{kommun} kommun", f"{kommun}s kommun"):
+                return rensa_organnamn(k)
+        titel = (page.css("title::text").get() or "").split(" - ")[0].split(" | ")[0].strip()
+        for k in (fallback, titel):
+            if k and not SKRAP_RUBRIK.search(k):
+                return rensa_organnamn(k)
+        return ""
 
     def _manuella_sidor(self, start) -> list[tuple[str, str]]:
         sel = self.kalla.extra.get("organ_lankar")
@@ -101,7 +118,9 @@ class GenericTableAdapter(Adapter):
         else:
             sidor = ((u, start if u == start.url else self.h.get(u), t) for u, t in self._manuella_sidor(start))
         for url, page, lanktext in sidor:
-            organ = self._organ_namn(page, lanktext or self.kalla.organisation)
+            organ = self._organ_namn(page, lanktext)
+            if not organ:
+                continue
             n = 0
             for obs in tolka_tabeller(page, self.kalla.org_slug, organ, url):
                 n += 1

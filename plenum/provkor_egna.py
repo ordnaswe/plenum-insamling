@@ -5,8 +5,9 @@ framtagen ur kartläggningen) och föreslår vilka som kan kopplas in.
   python -m plenum.provkor_egna --org boden      # en kommun
   python -m plenum.provkor_egna --koppla-in      # läs rapporten, koppla in de godkända i kallor.csv
 
-Inget skrivs till Supabase. Godkänd = minst 40 uppdrag, minst 70 % med igenkänt parti
-och minst ett organ med 10 personer eller fler. Allt annat lämnas som manual.
+Inget skrivs till Supabase. Godkänd = minst 40 uppdrag, minst 70 % med igenkänt parti, minst 50 % med roll,
+minst ett organ med 10 personer eller fler och inga organnamn som ser ut som skräp
+(kakbanner, "Skriv ut", kommunens namn osv). Allt annat lämnas som manual.
 """
 from __future__ import annotations
 import argparse
@@ -41,6 +42,12 @@ def bedom(obs) -> dict:
         orsak.append(f"bara {parti:.0%} med parti")
     if n_storsta < 10:
         orsak.append("inget organ med minst 10 personer")
+    if roll < 0.5:
+        orsak.append(f"bara {roll:.0%} med roll")
+    from .adapters.generic_table import SKRAP_RUBRIK
+    skrap = [o for o in organ if SKRAP_RUBRIK.search(o)]
+    if skrap:
+        orsak.append("misstänkta organnamn: " + "; ".join(skrap[:3]))
     ex = "; ".join(f"{o.fornamn} {o.efternamn} ({o.parti}) {o.roll} i {o.organ_namn}" for o in obs[:3])
     return dict(antal_uppdrag=len(obs), antal_organ=len(organ), antal_personer=len(pers),
                 andel_parti=f"{parti:.2f}", andel_roll=f"{roll:.2f}",

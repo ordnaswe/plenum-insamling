@@ -81,7 +81,9 @@ def _roll_ur_rubrik(rubrik: str) -> str:
 def tolka_tabeller(page, org_slug: str, organ_namn: str, kalla_url: str):
     """Yieldar Observation från alla tabeller på sidan."""
     for tabell in page.css("table"):
-        rubrik_roll = _roll_ur_rubrik(_rubrik_fore(tabell))
+        rubrik = _rubrik_fore(tabell)
+        rubrik_roll = _roll_ur_rubrik(rubrik)
+        rubrik_parti = rubrik if normalisera_parti(rubrik) in PARTIER else ""
         rader = tabell.css("tr")
         if len(rader) < 2:
             continue
@@ -125,6 +127,8 @@ def tolka_tabeller(page, org_slug: str, organ_namn: str, kalla_url: str):
                 continue
             if not roll and rubrik_roll:
                 roll = rubrik_roll
+            if not parti and rubrik_parti:
+                parti = rubrik_parti
             pid = ""
             for href in tr.css("a::attr(href)").getall():
                 m = re.search(r"/(?:person|politician)/([0-9a-f-]{20,})", href or "", re.I)
