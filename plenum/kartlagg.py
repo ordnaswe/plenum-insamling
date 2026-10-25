@@ -65,6 +65,7 @@ FINGERAVTRYCK = [  # (namn, mönster i HTML/länkar)
     ("drupal", r"drupal"),
 ]
 _FA = [(n, re.compile(p, re.I)) for n, p in FINGERAVTRYCK]
+_NP_REG = re.compile(r"netpublicator\.com/elected/registry/([0-9a-f]{32})", re.I)
 _PARTI = re.compile(
     r"\((S|M|SD|C|V|KD|L|MP)\)"
     r"|socialdemokraterna|moderaterna|sverigedemokraterna|centerpartiet|vänsterpartiet"
@@ -135,7 +136,7 @@ def fingeravtryck(html: str, lankar: list[str]) -> set[str]:
 def kartlagg_en(h, k, max_sidor: int = 8) -> dict:
     rad = dict(org_slug=k.org_slug, organisation=k.organisation, typ=k.typ, hemsida="",
                basta_sida="", parti_traffar=0, roll_traffar=0, mailto=0,
-               fingeravtryck="", extern_systemlank="", inbaddat="", sidor_404=0, besokta_sidor=0, anteckning="")
+               fingeravtryck="", extern_systemlank="", np_register="", inbaddat="", sidor_404=0, besokta_sidor=0, anteckning="")
     start = None
     for url in kandidater(k):
         try:
@@ -159,6 +160,7 @@ def kartlagg_en(h, k, max_sidor: int = 8) -> dict:
     besokta = 0
     noll404 = 0
     iframes: set[str] = set()
+    np_kand: list[str] = []
     while ko and besokta < max_sidor:
         ko.sort(key=lambda x: -x[0])
         _, url, page = ko.pop(0)
@@ -179,6 +181,10 @@ def kartlagg_en(h, k, max_sidor: int = 8) -> dict:
             if src and not src.startswith(("about:", "javascript:")):
                 iframes.add(urlparse(urljoin(url, src)).netloc)
                 lankar.append(urljoin(url, src))
+        for l in lankar + [url]:
+            m = _NP_REG.search(l)
+            if m and m.group(1) not in np_kand:
+                np_kand.append(m.group(1))
         fa |= fingeravtryck(_html(page), lankar)
         sig = sidsignal(page)
         p = sig[0] * 2 + sig[1] + sig[2] + (3 if _BRA_URL.search(url) else 0)
@@ -200,6 +206,16 @@ def kartlagg_en(h, k, max_sidor: int = 8) -> dict:
             if uhost.endswith(host) or any(rx.search(u) for _, rx in _FA[:9]):
                 sedda.add(u)
                 ko.append((sc, u, None))
+    for rid in np_kand[:3]:
+        try:
+            reg = h.get(f"https://www.netpublicator.com/elected/registry/{rid}/politicians")
+        except Exception:
+            continue
+        titel = (reg.css("title::text").get() or "").lower()
+        n = namn_kort(k)
+        if reg.status == 200 and n in titel and (k.typ != "region" or "region" in titel):
+            rad["np_register"] = f"https://www.netpublicator.com/elected/registry/{rid}/"
+            break
     # inbäddade tjänster som bara är video/kartor/cookies räknas inte
     iframes = {d for d in iframes if not re.search(r"youtube|vimeo|google|maps|cookie|facebook|twitter|qbrick|readspeaker|siteimprove", d)}
     rad.update(besokta_sidor=besokta, fingeravtryck=",".join(sorted(fa)), extern_systemlank=extern,
@@ -219,6 +235,8 @@ def main(argv=None):
     p.add_argument("--kallor", default="config/kallor.csv")
     p.add_argument("--org", action="append")
     p.add_argument("--out", default="data/kartlaggning.csv")
+    p.add_argument("--uppdatera", action="store_true",
+                   help="skriv in bekräftade Netpublicator-register i config/kallor.csv")
     a = p.parse_args(argv)
     from . import fetch as _f
     _f.MIN_PAUS, _f.MAX_PAUS = 0.8, 1.6
@@ -238,7 +256,7 @@ def main(argv=None):
                   f"[{rad.get('fingeravtryck','')}] P{rad.get('parti_traffar',0)} {rad.get('inbaddat','')} {rad.get('anteckning','')}")
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     falt = ["org_slug", "organisation", "typ", "hemsida", "basta_sida", "parti_traffar", "roll_traffar",
-            "mailto", "fingeravtryck", "extern_systemlank", "inbaddat", "sidor_404", "besokta_sidor", "anteckning"]
+            "mailto", "fingeravtryck", "extern_systemlank", "np_register", "inbaddat", "sidor_404", "besokta_sidor", "anteckning"]
     with open(a.out, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=falt, extrasaction="ignore")
         w.writeheader()
@@ -252,7 +270,24 @@ def main(argv=None):
     ib = Counter(x for r in rader for x in (r.get("inbaddat") or "").split(",") if x)
     print("  inbäddade tjänster:", ", ".join(f"{n} {c}" for n, c in ib.most_common(15)))
     print("  fingeravtryck:", ", ".join(f"{n} {c}" for n, c in fa.most_common()))
+    print(f"  bekräftade Netpublicator-register: {sum(1 for r in rader if r.get('np_register'))}")
     print(f"-> {a.out}")
+    if a.uppdatera:
+        import time
+        per = {r["org_slug"]: r["np_register"] for r in rader if r.get("np_register")}
+        alla = list(csv.DictReader(open(a.kallor, encoding="utf-8-sig")))
+        n = 0
+        for r in alla:
+            if r["org_slug"] in per and r.get("adapter") == "manual":
+                r.update(system="netpublicator", adapter="netpublicator", base_url=per[r["org_slug"]], aktiv="1",
+                         kommentar=f"Netpublicator-register, hittat av kartläggningen {time.strftime('%Y-%m-%d')}")
+                n += 1
+                print(f"  SATT {r['organisation']} -> {per[r['org_slug']]}")
+        with open(a.kallor, "w", encoding="utf-8", newline="") as f:
+            w = csv.DictWriter(f, fieldnames=alla[0].keys())
+            w.writeheader()
+            w.writerows(alla)
+        print(f"{n} rader uppdaterade i {a.kallor}")
 
 
 if __name__ == "__main__":

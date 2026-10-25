@@ -39,6 +39,18 @@ def _epost_i(el) -> str:
     return hitta_epost(_text(el))
 
 
+def _parti_cell(cell) -> str:
+    """Partiet som text, eller från logotypens alt/title (Netpublicator, Lund m.fl.)."""
+    t = _text(cell)
+    if t:
+        return t
+    for sel in ("img::attr(alt)", "img::attr(title)", "a::attr(title)"):
+        v = (cell.css(sel).get() or "").strip()
+        if v:
+            return v
+    return ""
+
+
 def _kolumnkarta(headers: list[str]) -> dict[str, int]:
     karta = {}
     for i, h in enumerate(headers):
@@ -67,13 +79,13 @@ def tolka_tabeller(page, org_slug: str, organ_namn: str, kalla_url: str):
                 efternamn = texter[karta["efternamn"]]
                 fornamn = texter[karta["fornamn"]] if "fornamn" in karta and karta["fornamn"] < len(texter) else ""
                 namn = f"{fornamn} {efternamn}".strip()
-                parti = texter[karta["parti"]] if "parti" in karta and karta["parti"] < len(texter) else ""
+                parti = _parti_cell(celler[karta["parti"]]) if "parti" in karta and karta["parti"] < len(celler) else ""
                 roll = texter[karta["roll"]] if "roll" in karta and karta["roll"] < len(texter) else ""
                 organ = texter[karta["organ"]] if "organ" in karta and karta["organ"] < len(texter) else organ_namn
                 epost = _epost_i(tr)
             elif "namn" in karta and karta["namn"] < len(texter):
                 namn = texter[karta["namn"]]
-                parti = texter[karta["parti"]] if "parti" in karta and karta["parti"] < len(texter) else ""
+                parti = _parti_cell(celler[karta["parti"]]) if "parti" in karta and karta["parti"] < len(celler) else ""
                 roll = texter[karta["roll"]] if "roll" in karta and karta["roll"] < len(texter) else ""
                 organ = texter[karta["organ"]] if "organ" in karta and karta["organ"] < len(texter) else organ_namn
                 epost = _epost_i(celler[karta["epost"]]) if "epost" in karta and karta["epost"] < len(texter) else _epost_i(tr)
@@ -94,7 +106,7 @@ def tolka_tabeller(page, org_slug: str, organ_namn: str, kalla_url: str):
                 continue
             pid = ""
             for href in tr.css("a::attr(href)").getall():
-                m = re.search(r"/person/([0-9a-f-]{20,})", href or "", re.I)
+                m = re.search(r"/(?:person|politician)/([0-9a-f-]{20,})", href or "", re.I)
                 if m:
                     pid = m.group(1)
                     break

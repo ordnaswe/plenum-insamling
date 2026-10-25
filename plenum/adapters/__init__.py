@@ -1,11 +1,13 @@
 from .troman import TromanAdapter
 from .generic_table import GenericTableAdapter
 from .manual import ManualAdapter
+from .netpublicator import NetpublicatorAdapter
 
 ADAPTRAR = {
     "troman": TromanAdapter,
     "generic_table": GenericTableAdapter,
     "manual": ManualAdapter,
+    "netpublicator": NetpublicatorAdapter,
     # "system2": lägg till här när vi vet vilket det andra stora systemet är
 }
 
