@@ -52,3 +52,17 @@ def test_organ():
 def test_epost():
     assert hitta_epost("mailto:Anna.Berg@Politik.Solna.se") == "anna.berg@politik.solna.se"
     assert hitta_epost("ingen adress") == ""
+
+
+def test_provkorning_2026_10_25():
+    from plenum.normalize import skala_rollprefix, ar_personnamn
+    from plenum.adapters.generic_table import rensa_organnamn, period_ur
+    assert normalisera_parti("Moderaterna (M") == "M"
+    assert skala_rollprefix("Ordförande: Cecilia Holm") == ("Cecilia Holm", "Ordförande")
+    assert normalisera_roll(skala_rollprefix("2:a vice ordf. Agneta Nilsson")[1]) == "andre_vice_ordforande"
+    assert not ar_personnamn("Samverkan mellan")
+    assert not ar_personnamn("Moderata samlingspartiet")
+    assert ar_personnamn("Gun Alexandersson-Malm")
+    assert rensa_organnamn("Ledamöter och ersättare i kommunfullmäktige 2022 (oktober)-2026") == "Kommunfullmäktige"
+    assert period_ur("Kommunstyrelsen 2023-2026") == "2023-2026"
+    assert rensa_organnamn("Politiker i Kommunfullmäktige") == "Kommunfullmäktige"

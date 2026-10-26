@@ -9,7 +9,7 @@ from __future__ import annotations
 import re
 
 from ..models import Observation
-from ..normalize import hitta_epost, normalisera_roll, normalisera_parti, PARTIER
+from ..normalize import hitta_epost, normalisera_roll, normalisera_parti, PARTIER, skala_rollprefix, ar_personnamn
 
 RUBRIK = {
     "efternamn": re.compile(r"^efternamn", re.I),
@@ -123,7 +123,9 @@ def tolka_tabeller(page, org_slug: str, organ_namn: str, kalla_url: str):
                         roll = t
                 if not (parti or roll):
                     continue
-            if not namn or len(namn) > 80:
+            namn, prefixroll = skala_rollprefix(namn)
+            roll = roll or prefixroll
+            if not namn or len(namn) > 80 or not ar_personnamn(namn):
                 continue
             if not roll and rubrik_roll:
                 roll = rubrik_roll
@@ -141,7 +143,7 @@ def tolka_tabeller(page, org_slug: str, organ_namn: str, kalla_url: str):
 
 
 _LISTRAD = re.compile(
-    r"^(?P<namn>[^,(]{3,60}?)\s*\((?P<parti>[^()]{1,40})\)\s*[,:\-–]?\s*(?P<roll>.*)$")
+    r"^(?P<namn>[^,(]{3,60}?)\s*\((?P<parti>[^()]{1,40}(?:\([^()]{1,5}\))?)\)\s*[,:\-–]?\s*(?P<roll>.*)$")
 
 
 def tolka_listor(page, org_slug: str, organ_namn: str, kalla_url: str):
@@ -160,9 +162,11 @@ def tolka_listor(page, org_slug: str, organ_namn: str, kalla_url: str):
         roll = m.group("roll").strip()
         if roll and normalisera_roll(roll) == "ovrigt" and not _ROLL_ORD.search(roll):
             roll = ""
-        roll = roll or rubrik_roll
         parti = m.group("parti").strip()
-        namn = m.group("namn").strip()
+        namn, prefixroll = skala_rollprefix(m.group("namn").strip())
+        roll = roll or prefixroll or rubrik_roll
+        if not ar_personnamn(namn):
+            continue
         riksparti = normalisera_parti(parti) in PARTIER
         lokalt = bool(re.search(r"parti|lista|alternativ|initiativ|demokrat", parti, re.I))
         if not (riksparti or (lokalt and roll)) or len(namn.split()) < 2:

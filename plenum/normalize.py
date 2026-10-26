@@ -70,6 +70,14 @@ def normalisera_parti(parti_raw: str) -> str:
     key = s.lower().replace("(", "").replace(")", "").strip()
     if key in _PARTI_LOOKUP:
         return _PARTI_LOOKUP[key]
+    # sammansatt, t.ex. "Moderaterna (M" eller "Socialdemokraterna (S)"
+    m = re.search(r"\((S|M|SD|C|V|KD|L|MP)\b", s)
+    if m:
+        return m.group(1)
+    for kod, alias in PARTIER.items():
+        for a in alias:
+            if len(a) > 3 and a in s.lower():
+                return kod
     return s  # lokalt parti, t.ex. "Sjukvårdspartiet i Värmland"
 
 
@@ -177,3 +185,27 @@ def berika(obs) -> None:
     obs.organ_norm = organ_norm(obs.organ_namn)
     if obs.epost:
         obs.epost = hitta_epost(obs.epost)
+
+
+_ROLLPREFIX = re.compile(
+    r"^\s*((?:(?:1|2|3):?(?:e|a)|förste|andre|tredje)\s+vice\s+ordf(?:\.|örande)?|vice\s+ordf(?:\.|örande)?|"
+    r"ordförande|ordf\.|ledamot|ersättare|gruppledare|kommunalråd|oppositionsråd)\s*[:,\-–]?\s+", re.I)
+
+
+def skala_rollprefix(namn: str) -> tuple[str, str]:
+    """'Ordförande: Cecilia Holm' -> ('Cecilia Holm', 'Ordförande')."""
+    m = _ROLLPREFIX.match(namn or "")
+    if not m:
+        return namn, ""
+    return namn[m.end():].strip(), m.group(1).strip()
+
+
+_INTE_NAMN = re.compile(r"\d|samverkan|mellan|partier|ledamöter|ersättare|kommun|nämnd|styrelse|"
+                        r"socialdemokraterna|moderat|sverigedemokraterna|centerpartiet|vänsterpartiet|"
+                        r"kristdemokraterna|liberalerna|miljöpartiet|mandat|vakant|https?:|@", re.I)
+
+
+def ar_personnamn(namn: str) -> bool:
+    n = (namn or "").strip()
+    delar = n.split()
+    return 2 <= len(delar) <= 6 and not _INTE_NAMN.search(n) and n[:1].isupper()

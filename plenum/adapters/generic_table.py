@@ -22,17 +22,31 @@ NEJ = re.compile(r"protokoll|kallelse|sammanträde|sammantrade|handling|arkiv|va
                  r"lediga|kontakt|felanmäl|e-tjänst|cookie|tillgänglighet|\.pdf$|mailto:", re.I)
 SKRAP_RUBRIK = re.compile(r"kakor|cookie|skriv ut|kontakt|sök |^sök$|startsida|underhåll|hitta din|"
                           r"meny|navigering|genvägar|lyssna|translate|^kommun och politik$|"
-                          r"^politik och demokrati$|^politisk organisation$|^nämnder$|^utskott$|^förtroendevalda$", re.I)
+                          r"^politik och demokrati$|^politisk organisation$|^nämnder$|^utskott$|^förtroendevalda$|"
+                          r"^om \S+\.se$|lista med|dela sidan|mer om oss|other languages|engagera dig|"
+                          r"mandatfördelning|delegationsordning|arvodesreglemente|^ledamöter$|^ersättare$", re.I)
 _SVANS = re.compile(r"(s)?\s+(ledamöter och ersättare|ledamöter|ersättare|förtroendevalda|"
                     r"politiker|sammansättning|ledamot)$", re.I)
 
 
+_PREFIX = re.compile(r"^(ledamöter och ersättare i|ledamöter i|ersättare i|politiker i|förtroendevalda i|"
+                     r"sammansättning i)\s+", re.I)
+_PERIOD = re.compile(r"\b(20\d\d)\s*(?:\([a-zåäö]+\))?\s*[-–]\s*(20\d\d)\b")
+
+
 def rensa_organnamn(n: str) -> str:
     n = re.sub(r"\s+", " ", n or "").strip()
+    n = _PREFIX.sub("", n)
+    n = _PERIOD.sub("", n).replace("()", "").strip(" ,-–")
     m = _SVANS.search(n)
     if m and len(n[: m.start()]) > 3:
         n = n[: m.start()]
-    return n
+    return n[:1].upper() + n[1:]
+
+
+def period_ur(n: str) -> str:
+    m = _PERIOD.search(n or "")
+    return f"{m.group(1)}-{m.group(2)}" if m else ""
 
 
 class GenericTableAdapter(Adapter):
@@ -121,10 +135,14 @@ class GenericTableAdapter(Adapter):
             organ = self._organ_namn(page, lanktext)
             if not organ:
                 continue
+            rubriker = " ".join(_text(e) for e in page.css("h1"))
+            period = period_ur(rubriker) or period_ur(lanktext)
             n = 0
             for obs in tolka_tabeller(page, self.kalla.org_slug, organ, url):
                 n += 1
+                obs.mandatperiod = period
                 yield obs
             if n == 0:
                 for obs in tolka_listor(page, self.kalla.org_slug, organ, url):
+                    obs.mandatperiod = period
                     yield obs
