@@ -1,0 +1,27 @@
+name: Inspektera JavaScript-sajt (med webbläsare)
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Adress, t.ex. https://evald.stockholm.se/extern/organ"
+        required: true
+
+jobs:
+  inspektera:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -r requirements.txt
+      - name: Installera Chromium
+        run: python -m playwright install --with-deps chromium
+      - name: Inspektera
+        run: python -m plenum.inspect_js "${{ github.event.inputs.url }}"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: inspect-js
+          path: data/js
