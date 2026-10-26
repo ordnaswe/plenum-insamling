@@ -3,7 +3,7 @@ ale,Ale,1440,kommun,troman,troman,https://ale.tromanpublik.se/,1,{},"Troman, hit
 alingsas,Alingsås,1489,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 alvesta,Alvesta,0764,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 aneby,Aneby,0604,kommun,netpublicator,netpublicator,https://www.netpublicator.com/elected/registry/2cf129a2703046cbbd1c0d28938ecd6b/,1,{},"Netpublicator-register, hittat av kartläggningen 2026-10-25"
-arboga,Arboga,1984,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
+arboga,Arboga,1984,kommun,egen,generic_table,https://arboga.se/kommun-och-politik/organisation/hel--eller-delagda-kommunala-bolag.html,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 48 uppdrag"
 arjeplog,Arjeplog,2506,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 arvidsjaur,Arvidsjaur,2505,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 arvika,Arvika,1784,kommun,troman,troman,https://arvika.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
@@ -12,7 +12,7 @@ avesta,Avesta,2084,kommun,troman,troman,https://avesta.tromanpublik.se/,1,{},"Tr
 bengtsfors,Bengtsfors,1460,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 berg,Berg,2326,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 bjurholm,Bjurholm,2403,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
-bjuv,Bjuv,1260,kommun,,manual,,1,{},"Tidigare falsk Troman-träff, återställd 2026-10-24"
+bjuv,Bjuv,1260,kommun,egen,generic_table,https://www.bjuv.se/kommun-och-politik/kommunens-organisation/kommunfullmaktige.html,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 90 uppdrag"
 boden,Boden,2582,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 bollebygd,Bollebygd,1443,kommun,troman,troman,https://bollebygd.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
 bollnas,Bollnäs,2183,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
@@ -25,7 +25,7 @@ bromolla,Bromölla,1272,kommun,,manual,,1,{},System okänt: fyll i från troman_
 bracke,Bräcke,2305,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 burlov,Burlöv,1231,kommun,troman,troman,https://burlov.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
 bastad,Båstad,1278,kommun,troman,troman,https://bastad.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
-dals-ed,Dals-Ed,1438,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
+dals-ed,Dals-Ed,1438,kommun,egen,generic_table,https://www.dalsed.se/kommun-och-politik/fortroendevalda/kommunfullmaktige-2026-2030/,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 100 uppdrag"
 danderyd,Danderyd,0162,kommun,troman,troman,https://danderyd.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
 degerfors,Degerfors,1862,kommun,troman,troman,https://degerfors.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda hos oss"
 dorotea,Dorotea,2425,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
@@ -45,7 +45,7 @@ filipstad,Filipstad,1782,kommun,,manual,,1,{},System okänt: fyll i från troman
 finspang,Finspång,0562,kommun,troman,troman,https://finspang.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
 flen,Flen,0482,kommun,troman,troman,https://flen.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda hos oss."
 forshaga,Forshaga,1763,kommun,troman,troman,https://forshaga.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
-fargelanda,Färgelanda,1439,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
+fargelanda,Färgelanda,1439,kommun,egen,generic_table,https://fargelanda.se/kommun-och-politik/politik-och-demokrati/kommunfullmaktige/fortroendevalda/,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 105 uppdrag"
 gagnef,Gagnef,2026,kommun,troman,troman,https://gagnef.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda i Gagnefs kommun."
 gislaved,Gislaved,0662,kommun,troman,troman,https://gislaved.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
 gnesta,Gnesta,0461,kommun,troman,troman,https://gnesta.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda hos oss."
@@ -62,18 +62,18 @@ habo,Habo,0643,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py /
 hagfors,Hagfors,1783,kommun,troman,troman,https://hagfors.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda i Hagfors kommun"
 hallsberg,Hallsberg,1861,kommun,troman,troman,https://hallsberg.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Hallsbergs kommuns förtroendevalda"
 hallstahammar,Hallstahammar,1961,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
-halmstad,Halmstad,1380,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
+halmstad,Halmstad,1380,kommun,egen,generic_table,https://www.halmstad.se/kommunochpolitik/politikochdemokrati/paverkaninsynochdelaktighet/kontaktapolitiker.8028.html?sv.target=12.64e2add217cc0c945a82b69b&sv.12.64e2add217cc0c945a82b69b.route=%2Forganization%2Fd01b754c-e8ae-4595-ac9f-62edbb71f8c7,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 509 uppdrag"
 hammaro,Hammarö,1761,kommun,troman,troman,https://hammaro.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Hammarö kommun"
 haninge,Haninge,0136,kommun,troman,troman,https://haninge.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
 haparanda,Haparanda,2583,kommun,troman,troman,https://haparanda.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
-heby,Heby,0331,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
+heby,Heby,0331,kommun,egen,generic_table,https://www.heby.se/organisation-plats-och-politik/demokrati-dialog-och-inflytande/hitta-din-politiker,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 163 uppdrag"
 hedemora,Hedemora,2083,kommun,troman,troman,https://hedemora.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda hos oss."
 helsingborg,Helsingborg,1283,kommun,troman,troman,https://helsingborg.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
 herrljunga,Herrljunga,1466,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 hjo,Hjo,1497,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 hofors,Hofors,2104,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 huddinge,Huddinge,0126,kommun,troman,troman,https://huddinge.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda hos oss."
-hudiksvall,Hudiksvall,2184,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
+hudiksvall,Hudiksvall,2184,kommun,egen,generic_table,https://hudiksvall.se/Sidor/Kommun-och-politik/Kommunens-organisation/Kommunfullmaktige.html,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 332 uppdrag"
 hultsfred,Hultsfred,0860,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 hylte,Hylte,1315,kommun,troman,troman,https://hylte.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda i Hylte kommun"
 haabo,Håbo,0305,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
@@ -162,7 +162,7 @@ nykvarn,Nykvarn,0140,kommun,troman,troman,https://nykvarn.tromanpublik.se/,1,{},
 nykoping,Nyköping,0480,kommun,troman,troman,https://nykoping.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda I Nyköpings kommun"
 nynashamn,Nynäshamn,0192,kommun,troman,troman,https://nynashamn.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: (ingen titel)"
 nassjo,Nässjö,0682,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
-ockelbo,Ockelbo,2101,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
+ockelbo,Ockelbo,2101,kommun,egen,generic_table,https://ockelbo.se/kommun--politik/kommunens-organisation/kommunfullmaktige,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 122 uppdrag"
 olofstrom,Olofström,1060,kommun,troman,troman,https://olofstrom.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda i Olofströms kommun."
 orsa,Orsa,2034,kommun,netpublicator,netpublicator,https://www.netpublicator.com/elected/registry/a13fab42083b409695fedc3139f0d5a8/,1,{},"Netpublicator-register, hittat av kartläggningen 2026-10-25"
 orust,Orust,1421,kommun,troman,troman,https://orust.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda"
@@ -170,7 +170,7 @@ osby,Osby,1273,kommun,troman,troman,https://osby.tromanpublik.se/,1,{},"Troman, 
 oskarshamn,Oskarshamn,0882,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 ovanaker,Ovanåker,2121,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 oxelosund,Oxelösund,0481,kommun,troman,troman,https://oxelosund.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendemannaregister"
-pajala,Pajala,2521,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
+pajala,Pajala,2521,kommun,egen,generic_table,https://www.pajala.se/kommun-politik-och-service/ledning-styrning-och-politik/kommunens-organisation/kommunfullmaktige/,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 49 uppdrag"
 partille,Partille,1402,kommun,troman,troman,https://partille.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda hos oss"
 perstorp,Perstorp,1275,kommun,troman,troman,https://perstorp.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda hos oss i Perstorps kommun"
 pitea,Piteå,2581,kommun,troman,troman,https://pitea.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: (ingen titel)"
@@ -209,12 +209,12 @@ sunne,Sunne,1766,kommun,troman,troman,https://sunne.tromanpublik.se/,1,{},"Troma
 surahammar,Surahammar,1907,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 svalov,Svalöv,1214,kommun,troman,troman,https://svalov.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda i Svalövs kommun"
 svedala,Svedala,1263,kommun,troman,troman,https://svedala.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda i Svedala kommun"
-svenljunga,Svenljunga,1465,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
-saffle,Säffle,1785,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
+svenljunga,Svenljunga,1465,kommun,egen,generic_table,https://www.svenljunga.se/kommun--politik/kommunens-organisation/fortroendevalda,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 146 uppdrag"
+saffle,Säffle,1785,kommun,egen,generic_table,https://saffle.se/kommun-och-politik/kommunens-organisation/kommunfullmaktige.html,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 81 uppdrag"
 sater,Säter,2082,kommun,troman,troman,https://sater.tromanpublik.se/,1,{},"Troman, subdomän verifierad via Google-index 2026-05"
 savsjo,Sävsjö,0684,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
-soderhamn,Söderhamn,2182,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
-soderkoping,Söderköping,0582,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
+soderhamn,Söderhamn,2182,kommun,egen,generic_table,https://www.soderhamn.se/sidor/kommun-och-politik/organisation/namnder/barn--och-larandenamnden.html,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 82 uppdrag"
+soderkoping,Söderköping,0582,kommun,egen,generic_table,https://www.soderkoping.se/kommun-politik/politik-beslut/namnder-och-fullmaktige/kommunfullmaktige/,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 192 uppdrag"
 sodertalje,Södertälje,0181,kommun,troman,troman,https://sodertalje.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda i Södertälje kommun"
 solvesborg,Sölvesborg,1083,kommun,netpublicator,netpublicator,https://www.netpublicator.com/elected/registry/a72830bd5a784c7aa8d22f083e57ede8/,1,{},"Netpublicator-register, hittat av kartläggningen 2026-10-25"
 tanum,Tanum,1435,kommun,troman,troman,https://tanum.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda Tanums kommun"
@@ -223,11 +223,11 @@ tidaholm,Tidaholm,1498,kommun,netpublicator,netpublicator,https://www.netpublica
 tierp,Tierp,0360,kommun,troman,troman,https://tierp.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda hos oss."
 timra,Timrå,2262,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 tingsryd,Tingsryd,0763,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
-tjorn,Tjörn,1419,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
+tjorn,Tjörn,1419,kommun,egen,generic_table,https://www.tjorn.se/kommun-och-politik/kommunens-organisation/kommunfullmaktige/politiker-i-kommunfullmaktige,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 203 uppdrag"
 tomelilla,Tomelilla,1270,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 torsby,Torsby,1737,kommun,troman,troman,https://torsby.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda i Torsby kommun."
 torsas,Torsås,0834,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
-tranemo,Tranemo,1452,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
+tranemo,Tranemo,1452,kommun,egen,generic_table,https://tranemo.se/kommun--politik/politik-och-demokrati/plattform-for-dig-som-ar-politiker/din-roll-som-politiker,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 50 uppdrag"
 tranas,Tranås,0687,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 trelleborg,Trelleborg,1287,kommun,troman,troman,https://trelleborg.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda i Trelleborgs kommun"
 trollhattan,Trollhättan,1488,kommun,netpublicator,netpublicator,https://www.netpublicator.com/elected/registry/fb58e9d1017946f180379dad2c94b468/,1,{},"Netpublicator-register, hittat av kartläggningen 2026-10-25"
@@ -250,7 +250,7 @@ vansbro,Vansbro,2021,kommun,,manual,,1,{},System okänt: fyll i från troman_dat
 vara,Vara,1470,kommun,netpublicator,netpublicator,https://www.netpublicator.com/elected/registry/f3692d5258b04380be12d6e243e2dee5/,1,{},"Netpublicator-register, hittat av kartläggningen 2026-10-25"
 varberg,Varberg,1383,kommun,troman,troman,https://varberg.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda Varbergs kommun"
 vaxholm,Vaxholm,0187,kommun,troman,troman,https://vaxholm.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda i Vaxholms stad"
-vellinge,Vellinge,1233,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
+vellinge,Vellinge,1233,kommun,egen,generic_table,https://vellinge.se/kommun-och-politik/kommunens-organisation/kommunfullmaktige,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 215 uppdrag"
 vetlanda,Vetlanda,0685,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 vilhelmina,Vilhelmina,2462,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 vimmerby,Vimmerby,0884,kommun,troman,troman,https://vimmerby.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda i Vimmerby kommun"
@@ -258,7 +258,7 @@ vindeln,Vindeln,2404,kommun,,manual,,1,{},System okänt: fyll i från troman_dat
 vingaker,Vingåker,0428,kommun,troman,troman,https://vingaker.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda i Vingåkers Kommun"
 vargarda,Vårgårda,1442,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 vanersborg,Vänersborg,1487,kommun,netpublicator,netpublicator,https://www.netpublicator.com/elected/registry/596eaf0679f34a4ab0e32ba6131a1e25/,1,{},"Netpublicator-register, hittat av kartläggningen 2026-10-25"
-vannas,Vännäs,2460,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
+vannas,Vännäs,2460,kommun,egen,generic_table,https://www.vannas.se/kommun-och-politik/politik-och-sammantraden/kommunfullmaktige,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 47 uppdrag"
 varmdo,Värmdö,0120,kommun,troman,troman,https://varmdo.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Hitta din Värmdöpolitiker"
 varnamo,Värnamo,0683,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 vastervik,Västervik,0883,kommun,netpublicator,netpublicator,https://www.netpublicator.com/elected/registry/fe47625d5fb3456bbc61dc5f56b556c6/,1,{},"Netpublicator-register, hittat av kartläggningen 2026-10-25"
@@ -278,7 +278,7 @@ alvdalen,Älvdalen,2039,kommun,netpublicator,netpublicator,https://www.netpublic
 alvkarleby,Älvkarleby,0319,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 alvsbyn,Älvsbyn,2560,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 angelholm,Ängelholm,1292,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
-ockero,Öckerö,1407,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
+ockero,Öckerö,1407,kommun,egen,generic_table,https://www.ockero.se/kommun-och-politik/kommunens-organisation/kommunfullmaktige,1,"{""auto"": true}","Egen webbplats, provkörd 2026-10-26: 191 uppdrag"
 odeshog,Ödeshög,0509,kommun,,manual,,1,{},System okänt: fyll i från troman_data.py / egen kartläggning
 orebro,Örebro,1880,kommun,troman,troman,https://orebro.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda i Örebro kommun"
 orkelljunga,Örkelljunga,1257,kommun,troman,troman,https://orkelljunga.tromanpublik.se/,1,{},"Troman, hittad automatiskt 2026-10-23: Förtroendevalda i Örkelljunga kommun"
