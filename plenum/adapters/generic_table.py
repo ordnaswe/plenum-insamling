@@ -24,7 +24,8 @@ SKRAP_RUBRIK = re.compile(r"kakor|cookie|skriv ut|kontakt|sök |^sök$|startsida
                           r"meny|navigering|genvägar|lyssna|translate|^kommun och politik$|"
                           r"^politik och demokrati$|^politisk organisation$|^nämnder$|^utskott$|^förtroendevalda$|"
                           r"^om \S+\.se$|lista med|dela sidan|mer om oss|other languages|engagera dig|"
-                          r"mandatfördelning|delegationsordning|arvodesreglemente|^ledamöter$|^ersättare$", re.I)
+                          r"mandatfördelning|delegationsordning|arvodesreglemente|^ledamöter$|^ersättare$|"
+                          r"synpunkter|sociala medier|mejl till|hitta snabbt|nämndernas funktion|motioner", re.I)
 _SVANS = re.compile(r"(s)?\s+(ledamöter och ersättare|ledamöter|ersättare|förtroendevalda|"
                     r"politiker|sammansättning|ledamot)$", re.I)
 
